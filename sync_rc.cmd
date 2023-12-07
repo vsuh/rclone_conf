@@ -1,11 +1,14 @@
 :: Скрипт для синхронизации папок obsidian с Y: на U:
+:: 2023(c)VSCraft
+@echo off
+cd /d %~dp0
 chcp 65001>nul
-set rem1=yy0:OBSIDIAN.RC
-set rem2=uu0:OBSIDIAN.RC.GOOGLE
+set src=yy0:OBSIDIAN.RC
+set dst=uu0:OBSIDIAN.RC.GOOGLE
 set log=D:\tmp\RCLONE__sync.log
 ::-vvv
-echo %DATE% %TIME% --------------------------------------------------------------- >>%log%
+echo %DATE% %TIME% ----------------------- CD: %cd% ---------------------------------------- >>%log%
 set cmd= -c --check-first --ignore-case-sync --config rclone.conf --log-file %log% --log-level INFO
-
-c:\progra~1\rclone\rclone.exe sync %cmd% %rem1% %rem2%
-::: не нужно? c:\progra~1\rclone\rclone.exe sync %cmd% %rem2% %rem1%
+echo ..syncing %src% ^>^> %dst%
+c:\progra~1\rclone\rclone.exe sync %cmd% %src% %dst%
+::: не нужно? c:\progra~1\rclone\rclone.exe sync %cmd% %dst% %src%
