@@ -5,6 +5,7 @@ SET env=D:\tmp\a_drive_rclone.ENV
 
 SET var=h
 IF `%1`==`a` SET var=a
+IF `%1`==`b` SET var=b
 IF `%1`==`y` SET var=y
 IF `%1`==`u` SET var=u
 call :vars %~nx0
@@ -19,6 +20,7 @@ goto :eof
 :vars
 @if `h`==`%var%` goto :help
 @if `a`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount ml0: A: --vfs-cache-mode full
+@if `b`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount bc0: B: --vfs-cache-mode full
 @if `u`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount uu0: U: --vfs-cache-mode full
 @if `y`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount yy0: Y: --vfs-cache-mode full
 
@@ -31,6 +33,7 @@ echo ============= RCLONE mount to a:, u: or y: ==============
 echo.
 echo %1 [a^|y^|u^|h]
 echo   a - mounts ml0: remote to A: drive
+echo   b - mounts bc0: remote to B: drive
 echo   y - mounts yy0: remote to Y: drive
 echo   u - mounts uu0: remote to U: drive
 echo   h - output this help
