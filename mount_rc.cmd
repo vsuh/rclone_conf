@@ -24,7 +24,7 @@ goto :eof
 @if `u`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount uu0: U: --vfs-cache-mode full
 @if `y`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount yy0: Y: --vfs-cache-mode full
 
-@exit /b
+@exit 
 
 :help
 echo off
