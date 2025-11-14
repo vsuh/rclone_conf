@@ -1,28 +1,42 @@
-cd /d %~dp0
-SET log=d:\tmp\%1_drive_rclone.log
-SET env=D:\tmp\a_drive_rclone.ENV
+@echo off
+SETLOCAL
+
+SET "rot=%~dp0"
+SET "log=d:\tmp\%1_drive_rclone.log"
+SET "cfg=%rot%rclone.conf"
+
+if "%~1"=="" goto help
+if /i "%~1"=="h" goto help
+
+SET "var=%~1"
+echo.%var%| findstr /i "[abyu]" >nul || goto help
+
+SET "cmd="
+if /i "%var%"=="a" SET "cmd=mount ml0: A:"
+if /i "%var%"=="b" SET "cmd=mount bc0: B:"
+if /i "%var%"=="y" SET "cmd=mount yy0: Y:"
+if /i "%var%"=="u" SET "cmd=mount uu0: U:"
+
+if not defined cmd goto help
+
+if exist %var%:\nul (
+    echo Drive %var%: is already in use.
+    exit /b 1
+)
+
+cd /d %rot%
+
+SET "cmn=--disable config-lock --config "%cfg%" --no-update-modtime --vfs-cache-mode full --log-file "%log%" --log-level NOTICE"
+
+start /min "rclone-%var%" "c:\progra~1\rclone\rclone.exe" %cmd% %cmn%
 
 
-SET var=h
-IF `%1`==`a` SET var=a
-IF `%1`==`b` SET var=b
-IF `%1`==`y` SET var=y
-IF `%1`==`u` SET var=u
-call :vars %~nx0
-if EXIST %var%:\nul exit
-start /min c:\progra~1\rclone\rclone.exe %cmd%
 goto :eof
 
 :: Предварительно, нужно установить `sshfs`
 :: https://github.com/winfsp/winfsp/releases
 :: https://github.com/winfsp/sshfs-win/releases
 
-:vars
-@if `h`==`%var%` goto :help
-@if `a`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount ml0: A: --vfs-cache-mode full
-@if `b`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount bc0: B: --vfs-cache-mode full
-@if `u`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount uu0: U: --vfs-cache-mode full
-@if `y`==`%var%` SET cmd= --config rclone.conf --log-file %log% --log-level NOTICE mount yy0: Y: --vfs-cache-mode full
 
 @exit 
 
@@ -41,3 +55,4 @@ echo.
 echo ======================================================
 echo.
 
+@exit
