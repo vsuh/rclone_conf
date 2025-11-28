@@ -11,7 +11,7 @@ if /i "%~1"=="h" goto help
 SET "var=%~1"
 echo.%var%| findstr /i "[abyu]" >nul || goto help
 
-# при загрузке отложить запуск на полминуты
+:: при загрузке отложить запуск на полминуты
 if /i `%2`==`BOOT` timeout /T 33
 
 SET "cmd="
