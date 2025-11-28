@@ -1,3 +1,4 @@
 rclone.conf*
 password.hiddenfile  
 *.HELP
+client_secret_*
