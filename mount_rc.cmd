@@ -1,5 +1,5 @@
 @echo off
-SETLOCAL
+SETLOCAL ENABLEEXTENSIONS
 
 SET "rot=%~dp0"
 SET "log=d:\tmp\%1_drive_rclone.log"
@@ -11,8 +11,11 @@ if /i "%~1"=="h" goto help
 SET "var=%~1"
 echo.%var%| findstr /i "[abyu]" >nul || goto help
 
+# при загрузке отложить запуск на полминуты
+if /i `%2`==`BOOT` timeout /T 33
+
 SET "cmd="
-if /i "%var%"=="a" SET "cmd=mount ml0: A:"
+if /i "%var%"=="a" SET "cmd=mount mus: A:"
 if /i "%var%"=="b" SET "cmd=mount bc0: B:"
 if /i "%var%"=="y" SET "cmd=mount yy0: Y:"
 if /i "%var%"=="u" SET "cmd=mount uu0: U:"
@@ -27,8 +30,9 @@ if exist %var%:\nul (
 cd /d %rot%
 
 SET "cmn=--disable config-lock --config "%cfg%" --no-update-modtime --vfs-cache-mode full --log-file "%log%" --log-level NOTICE"
-
-start /min "rclone-%var%" "c:\progra~1\rclone\rclone.exe" %cmd% %cmn%
+SET "eltitle=%cmd%"
+call :set_title %var%
+start /min "%eltitle%" "c:\progra~1\rclone\rclone.exe" %cmd% %cmn%
 
 
 goto :eof
@@ -37,6 +41,10 @@ goto :eof
 :: https://github.com/winfsp/winfsp/releases
 :: https://github.com/winfsp/sshfs-win/releases
 
+:set_title
+if /i `%1`==`a` set "eltitle=A: <== mus"
+if /i `%1`==`b` set "eltitle=B: <== bc0"
+exit /b
 
 @exit 
 
@@ -46,7 +54,7 @@ echo.
 echo ============= RCLONE mount to a:, u: or y: ==============
 echo.
 echo %1 [a^|y^|u^|h]
-echo   a - mounts ml0: remote to A: drive
+echo   a - mounts mus: remote to A: drive
 echo   b - mounts bc0: remote to B: drive
 echo   y - mounts yy0: remote to Y: drive
 echo   u - mounts uu0: remote to U: drive
